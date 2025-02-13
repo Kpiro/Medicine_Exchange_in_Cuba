@@ -50,18 +50,16 @@ def duplicate_matrix(input_matrix):
     
     return new_matrix
 
-def is_valid_next_city(next_city, route, interactions, n):
+def is_valid_next_city(next_city, route, pickup, n):
     """
     Verifica si el nodo candidato next_city se puede agregar a la ruta, cumpliendo:
     
     - Si next_city es un nodo de recogida (1 <= next_city <= n): siempre es válido.
     
     - Si next_city es un nodo de entrega (n+1 <= next_city <= 2*n):
-         * Se requiere que el punto de recogida asociado ya esté en la ruta.
-         * La pareja “impuesta” por interactions se interpreta así: para un nodo de entrega d,
-           definimos j = d - n (es decir, la orden asociada) y se espera que se haya visitado el nodo:
-               required_pickup = interactions[j-1] + 1
-           (se asume que interactions es 0-indexado y que los nodos de recogida son 1...n).
+         * Se requiere que el punto de recogida j asociado (j = next_city - n) ya esté en la ruta.
+         * Se requiere que la ciudad donde se recoge el producto a entregar en next_city, ya esté en la ruta
+            Es decir, pickup[j - 1] ya esté en la ruta.
     """
     # Si el nodo es de recogida, no hay restricción.
     if next_city <= n:
@@ -70,13 +68,15 @@ def is_valid_next_city(next_city, route, interactions, n):
         # next_city es un nodo de entrega.
         # Identificamos la orden: j = next_city - n, con j en 1..n.
         j = next_city - n  
-        # El arreglo interactions (0-indexado) indica que para la orden j se requiere haber visitado
-        # el nodo de recogida: interactions[j-1] + 1.
-        required_pickup = interactions[j - 1] + 1  
+        # Para visitar un nodo de entrega (next_city) se tiene que haber visitado su correspondiente nodo de entrega (j)
+        if j not in route:
+            return False
+        # El arreglo pickup indica que para la orden j se requiere haber recogido la mercancia en el nodo pickup[i]
+        required_pickup = pickup[j-1]  
         # La restricción se cumple si el nodo required_pickup ya está en la ruta.
         return (required_pickup in route)
 
-def construct_route(distance_matrix, pheromone, alpha, beta, interactions):
+def construct_route(distance_matrix, pheromone, alpha, beta, pickup):
     """
     Construye una ruta (ciclo hamiltoniano) para una hormiga que respeta las restricciones
     de recogida y entrega, según el arreglo interactions.
@@ -90,10 +90,7 @@ def construct_route(distance_matrix, pheromone, alpha, beta, interactions):
        para cada i en 0..n-1, interactions[i] = k significa que la mercancía recogida en el nodo (k+1)
        debe entregarse en el nodo (i + n + 1).
     
-    Antes de agregar un nodo candidato a la ruta, se verifica (usando is_valid_next_city) que se cumplan:
-      1. Si se trata de un nodo de entrega, su correspondiente punto de recogida ya fue visitado.
-      2. Si se impone una restricción de intercambio (array interactions), se verifica que se haya visitado
-         el nodo indicado.
+    Antes de agregar un nodo candidato a la ruta, se verifica que sea válido (usando is_valid_next_city).
     """
     total_nodes = len(distance_matrix)       # total_nodes = 2*n + 1
     n = (total_nodes - 1) // 2                # cantidad de ciudades (en modo pickup)
@@ -115,7 +112,7 @@ def construct_route(distance_matrix, pheromone, alpha, beta, interactions):
         # Filtrar candidatos válidos según las restricciones.
         valid_candidates = []
         for city in unvisited:
-            if is_valid_next_city(city, route, interactions, n):
+            if is_valid_next_city(city, route, pickup, n):
                 valid_candidates.append(city)
                 
         # Si ninguno de los candidatos restantes es válido, se opta por forzar la elección
@@ -157,12 +154,13 @@ def route_length(route, distance_matrix):
         length += distance_matrix[route[i]][route[(i + 1) % n]]
     return length
 
-def aco_tsp(distance_matrix, interactions, num_ants=20, num_iterations=100, alpha=1, beta=2, evaporation_rate=0.5, Q=100):
+def aco_tsp(distance_matrix, pickup, num_ants=20, num_iterations=100, alpha=1, beta=2, evaporation_rate=0.5, Q=100):
     """
     Implementación clásica del algoritmo de colonia de hormigas para el TSP.
 
     Parámetros:
       - distance_matrix: Matriz (numpy.array) de distancias entre ciudades.
+      - pickup: Arreglo que identifica donde se deben recoger los productos a entregar en las ciudades i.
       - num_ants: Número de hormigas por iteración.
       - num_iterations: Número de iteraciones a ejecutar.
       - alpha: Exponente que pondera la influencia de la feromona.
@@ -173,7 +171,7 @@ def aco_tsp(distance_matrix, interactions, num_ants=20, num_iterations=100, alph
     Retorna:
       - best_route: La mejor ruta (lista de índices de ciudades) encontrada.
       - best_length: La longitud de la mejor ruta.
-    """
+    """ 
     n = len(distance_matrix)-1
     distance_matrix = duplicate_matrix(distance_matrix)
     # Inicializar la matriz de feromonas con un valor pequeño y constante
@@ -188,7 +186,7 @@ def aco_tsp(distance_matrix, interactions, num_ants=20, num_iterations=100, alph
         
         # Cada hormiga construye una ruta
         for ant in range(num_ants):
-            route = construct_route(distance_matrix, pheromone, alpha, beta, interactions)
+            route = construct_route(distance_matrix, pheromone, alpha, beta, pickup)
             length = route_length(route, distance_matrix)
             routes.append(route)
             lengths.append(length)
@@ -224,8 +222,16 @@ if __name__ == "__main__":
         [10, 4,  8,  0, 6],
         [7,  3,  5,  6, 0]
     ], dtype=float)
-    interactions = [4,1,2,3]
-    best_route, best_length = aco_tsp(distance_matrix, interactions,
+    pickup = [4,1,2,3]
+
+    # distance_matrix = np.array([
+    #     [0,  2,  9, 10],
+    #     [2,  0,  6,  4],
+    #     [9,  6,  0,  8],
+    #     [10, 4,  8,  0]
+    # ], dtype=float)
+    # pickup = [2,0,1]
+    best_route, best_length = aco_tsp(distance_matrix, pickup,
                                       num_ants=20,
                                       num_iterations=100,
                                       alpha=1,
