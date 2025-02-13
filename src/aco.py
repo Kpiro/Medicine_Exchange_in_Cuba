@@ -215,22 +215,17 @@ def aco_tsp(distance_matrix, pickup, num_ants=20, num_iterations=100, alpha=1, b
 # Ejemplo de uso
 if __name__ == "__main__":
     # Ejemplo: 5 ciudades con una matriz de distancias simétrica.
-    distance_matrix = np.array([
-        [0,  2,  9, 10, 7],
-        [2,  0,  6,  4, 3],
-        [9,  6,  0,  8, 5],
-        [10, 4,  8,  0, 6],
-        [7,  3,  5,  6, 0]
-    ], dtype=float)
-    pickup = [4,1,2,3]
-
     # distance_matrix = np.array([
-    #     [0,  2,  9, 10],
-    #     [2,  0,  6,  4],
-    #     [9,  6,  0,  8],
-    #     [10, 4,  8,  0]
+    #     [0,  2,  9, 10, 7],
+    #     [2,  0,  6,  4, 3],
+    #     [9,  6,  0,  8, 5],
+    #     [10, 4,  8,  0, 6],
+    #     [7,  3,  5,  6, 0]
     # ], dtype=float)
-    # pickup = [2,0,1]
+    # pickup = [4,1,2,3]
+
+    distance_matrix = np.array([[0, 17, 38], [17, 0, 32], [38, 32, 0]], dtype=float)
+    pickup = [2,1]
     best_route, best_length = aco_tsp(distance_matrix, pickup,
                                       num_ants=20,
                                       num_iterations=100,

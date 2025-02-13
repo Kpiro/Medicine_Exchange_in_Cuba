@@ -109,23 +109,24 @@
 
 % --------------- RESUMEN - ABSTRACT -----------------------------------------------------
 \begin{abstract}
-algo ahi
+El acceso a medicamentos en Cuba enfrenta severas dificultades debido a restricciones económicas y problemas logísticos. En respuesta a esta crisis, ha surgido un sistema informal de intercambio de medicamentos basado en redes comunitarias. Este trabajo propone un modelo matemático para optimizar dicho intercambio, formulándolo como un problema de cobertura de ciclos en grafos dirigidos. Se demuestra la NP-completitud del problema y se presentan estrategias de resolución, incluyendo programación entera mixta (ILP) con CPLEX y una aproximación basada en la descomposición en subgrafos. Además, se aborda la distribución eficiente de medicamentos modelándola como una variante del Problema del Viajante (TSP), utilizando heurísticas como el Algoritmo de Colonia de Hormigas y Algoritmos Genéticos. Los resultados muestran que estas técnicas pueden mejorar la eficiencia del sistema de intercambio, reduciendo los tiempos de espera y optimizando el uso de recursos.
 \end{abstract}
 
 \begin{englishabstract}
-something here
+Access to medicine in Cuba faces severe challenges due to economic restrictions and logistical issues. In response to this crisis, an informal medicine exchange system has emerged, relying on community networks. This study proposes a mathematical model to optimize this exchange by formulating it as a cycle-cover problem in directed graphs. The NP-completeness of the problem is demonstrated, and resolution strategies are presented, including Integer Linear Programming (ILP) using CPLEX and an approximation based on graph decomposition. Additionally, efficient medicine distribution is modeled as a variant of the Traveling Salesman Problem (TSP), using heuristics such as the Ant Colony Optimization algorithm and Genetic Algorithms. The results show that these techniques can improve the efficiency of the exchange system, reducing waiting times and optimizing resource utilization.
 \end{englishabstract}
 
 \rule{\linewidth}{0.5pt}
 
 
 % --------------- KEYWORDS
-\noindent \textbf{Palabras Clave}: algunas, ahi
+\noindent \textbf{Palabras Clave}: Optimización, Programación Entera Mixta, CPLEX, Intercambio de Medicamentos, Problema del Viajante (TSP), Complejidad Computacional, Algoritmo de Colonia de Hormigas, Algoritmo Genético.
 
 
 \rule{\linewidth}{0.5pt}
 
 % --------------- MAIN CONTENT
+\newpage
 
 \tableofcontents
 
@@ -599,6 +600,8 @@ Este algoritmo de aproximación posee una complejidad \(O(G \cdot P \cdot n²)\)
 \rule{\linewidth}{0.5pt}
 
 \section{Conclusiones}
+
+El estudio realizado demuestra que el problema del intercambio de medicamentos en Cuba puede modelarse de manera efectiva utilizando teoría de grafos y técnicas de optimización. La formulación del problema como un ILP permite encontrar soluciones óptimas, aunque su complejidad computacional es alta. La descomposición en subgrafos mejora la escalabilidad del método, permitiendo abordar instancias más grandes con menor costo computacional. En cuanto a la distribución de medicamentos, la modelación basada en TSP y la implementación de algoritmos metaheurísticos han mostrado ser enfoques viables para optimizar el proceso logístico. En particular, el Algoritmo de Colonia de Hormigas y los Algoritmos Genéticos ofrecen soluciones cercanas al óptimo en tiempos de cómputo razonables. Este trabajo sienta las bases para futuras mejoras en los métodos de distribución y asignación de medicamentos en contextos de crisis.
 
 \renewcommand\refname{Referencias}
 
