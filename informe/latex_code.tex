@@ -31,7 +31,8 @@
 \usepackage{xcolor} % For colored text
 \usepackage{hyperref} % Package for links
 \usepackage{tikz}
-
+\theoremstyle{definition} % Establece el estilo antes de definir el entorno
+\newtheorem{definition}{Definición} % Define el entorno de definición
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -158,13 +159,15 @@ Un \textbf{intercambio válido} es un conjunto de \textbf{ciclos disjuntos}. El 
 
 \subsection{Restricciones en el Tamaño del Ciclo de Intercambio}
 
-Para garantizar la viabilidad operativa del sistema de intercambio, es fundamental establecer límites en el número de participantes dentro de cada ciclo. En este sentido, se determinó que el tamaño máximo de un ciclo de intercambio será de 20 personas. Esta decisión se basa en dos consideraciones principales:
+El recorrido diario de un vehículo está sujeto a restricciones prácticas significativas. Un ciclo que involucre un número excesivo de participantes implicaría la necesidad de visitar una gran cantidad de domicilios en un solo día. Esto conlleva los siguientes desafíos:
 \begin{itemize}
-    \item \textbf{Capacidad de Almacenamiento de los Vehículos}: Los vehículos utilizados para transportar los medicamentos cuentan con una capacidad de almacenamiento limitada. Un ciclo de intercambio con un número excesivo de participantes podría superar la capacidad de estos vehículos, lo cual no es posible.
-    \item  \textbf{Eficiencia en la Distribución}: Adicionalmente, el recorrido diario de un vehículo tiene restricciones prácticas. Un ciclo con demasiados participantes implicaría visitar una gran cantidad de domicilios en un solo día.
+\item\textbf{Desgaste operativo:}
+La persona encargada del transporte de la mercancía enfrentaría un alto nivel de desgaste físico y mental al tener que interactuar con múltiples clientes en un período de tiempo reducido.
+\item\textbf{Desconfianza del cliente:}
+Para ciclos de tamaño grande no existe forma de garantizar que todas las entregas se realicen en un mismo día. Si un cliente entrega su mercancía pero no recibe la correspondiente al intercambio en el mismo día, podría generar desconfianza en el proceso. Esto afectaría negativamente la experiencia del usuario y la credibilidad del servicio.
 \end{itemize}
-    
-Por lo tanto, limitar el número de personas en un ciclo a 20 garantiza que tanto la capacidad de transporte como la eficiencia en la entrega se mantengan dentro de parámetros operativos aceptables.
+
+Para garantizar la viabilidad operativa del sistema de intercambio, es fundamental establecer límites en el número de participantes dentro de cada ciclo. En este sentido, se determinó que el tamaño máximo de un ciclo de intercambio será de 20 personas, lo cual garantiza que la eficiencia en la entrega y el desgaste del trabajador se mantenga dentro de parámetros operativos aceptables.
 
 \subsection{Demostración de NP-Completitud}
 
@@ -175,16 +178,27 @@ Dado un grafo $G = (V, E)$ y un entero $L \geq 3$, el problema de determinar si 
 \end{theorem}
 
 \begin{proof}
-Es evidente que este problema pertenece a NP. Para demostrar su NP-dificultad, realizamos una reducción desde el problema de \textit{3D-Matching}. Este problema consiste en determinar, dados tres conjuntos disjuntos $X, Y, Z$ de tamaño $q$ y un conjunto de tríos $T \subseteq X \times Y \times Z$, si existe un subconjunto disjunto $M \subseteq T$ de tamaño $q$.
+Es evidente que este problema pertenece a NP. Para demostrar su NP-dificultad, realizamos una reducción desde el problema de \textit{3D-Matching} \cite{Wikipedia3DMatching}. 
 
 
-Para una instancia de \textit{3D-Matching}, se crea un vértice para cada elemento en $X, Y$ y $Z$. Luego, para cada trío $t_i = \{x_a, y_b, z_c\}$, se construye una estructura auxiliar la cual se muestra en la Figura \ref{fig:gadget}. Es importante notar que estas estructuras solo se intersectan en los vértices de $X \cup Y \cup Z$. Además, la construcción puede realizarse en tiempo polinomial.
+\begin{definition}[3D Matching]
+    
+    Sean \(X\), \(Y\) y \(Z\) conjuntos finitos, y sea \(T \subseteq X \times Y \times Z\). Es decir, \(T\) consiste en tripletas \((x, y, z)\) tales que \(x \in X\), \(y \in Y\) y \(z \in Z\). Un subconjunto \(M \subseteq T\) es un 3-dimensional matching si para cualesquiera dos tripletas distintas \((x_1, y_1, z_1) \in M\) y \((x_2, y_2, z_2) \in M\), se cumple que:
+    \[
+    x_1 \neq x_2, \quad y_1 \neq y_2, \quad \text{y} \quad z_1 \neq z_2.
+    \]
+\end{definition}
+
+El problema consiste en determinar si existe un 3D Matching de tamaño \(q\).
+
+
+Para una instancia de \textit{3D-Matching}, se crea un vértice para cada elemento en $X, Y$ y $Z$. Luego, para cada trío $t_i = \{x_a, y_b, z_c\}$, se construye una estructura auxiliar la cual se muestra en la Figura \ref{fig:gadget1}. Es importante notar que estas estructuras solo se intersectan en los vértices de $X \cup Y \cup Z$. Además, la construcción puede realizarse en tiempo polinomial.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{gareyjohnsonimage.jpg}
     \caption{Estructura auxiliar para la reducción de NP-completitud}
-    \label{fig:gadget}
+    \label{fig:gadget1}
 \end{figure}
 
 Dado un conjunto $M$ que forma un \textit{3D-Matching} perfecto, podemos garantizar la existencia de una cobertura de ciclos utilizando ciclos de longitud corta. Si $t_i = \{x_a, y_b, z_c\} \in M$, entonces en la estructura de $t_i$ se incluyen tres ciclos de longitud $L$ que contienen $x_a, y_b$ y $z_c$, respectivamente. Además, se añade el ciclo $(x_a^i, y_b^i, z_c^i)$. En caso contrario, si $t_i \notin M$, los ciclos de longitud $L$ incluirán $x_a^i, y_b^i$ y $z_c^i$ de manera separada. Dado que $M$ forma una partición de $X \times Y \times Z$, se garantiza que todos los vértices están cubiertos.
@@ -195,7 +209,7 @@ De manera inversa, si existe una cobertura perfecta de ciclos cortos en la const
 
 \subsection{Enfoque de solución basado en una formulación de ciclos}
 
-En esta sección, formulamos el problema como un ILP donde cada variable representa un ciclo. Esta estrategia se basa en un enfoque clásico para resolver el problema de cobertura de ciclos dirigidos cuando los ciclos tienen longitud 2.
+En esta sección, formulamos el problema como un ILP(Problema de Programación Lineal en Enteros) donde cada variable representa un ciclo. Esta estrategia se basa en un enfoque clásico para resolver el problema de cobertura de ciclos dirigidos cuando los ciclos tienen longitud 2.
 
 \subsubsection{Formulación del Problema}
 
@@ -306,6 +320,7 @@ El conjunto de ciclos \( C(L) \) está formado por todos los ciclos de longitud 
 donde \( n \) es el número de nodos en \( G \). Esta cantidad crece de forma exponencial respecto a \( L \), lo que representa un desafío computacional importante.
 
 \paragraph{Complejidad del ILP}
+
 Resolver un ILP es, en general, un problema NP-duro. En el modelo planteado, se tienen:
 \begin{itemize}
     \item \(\mathcal{O}(n^L)\) variables binarias, una por cada ciclo de longitud menor o igual a \( L \).
@@ -317,7 +332,7 @@ Por tanto, la complejidad en el peor caso para resolver este ILP es exponencial 
 \]
 Esta cota, aunque muy conservadora, refleja la dificultad intrínseca del problema cuando \( L > 2 \).
 
-\paragraph{Conclusión}
+
 Cuando \( L > 2 \), la solución se vuelve computacionalmente inviable para grafos grandes, debido al crecimiento exponencial en la cantidad de ciclos a considerar y, en consecuencia, en el número de variables del ILP. En la práctica, para mitigar este problema se pueden aplicar técnicas de reducción del conjunto de ciclos, particionamiento del grafo o métodos aproximados que permitan obtener soluciones de alta calidad en tiempos razonables.
 
 
@@ -334,7 +349,7 @@ Para dividir el grafo \( G \) en \( k \) subgrafos disjuntos \( G_1, \dots, G_k 
 \begin{itemize}
     \item \textbf{Descomposición basada en componentes conexas}: Se identifican las componentes conexas del grafo y cada componente se trata como un subgrafo independiente. Esta estrategia es eficiente si el grafo original presenta una estructura naturalmente fragmentada.
     \item \textbf{Particionamiento aleatorio}: Se asignan los nodos de \( G \) a \( k \) subgrafos de manera aleatoria, asegurando que cada subgrafo tenga aproximadamente el mismo número de nodos.
-    \item \textbf{Descomposición basada en clusters}: Se aplica un algoritmo de clustering (por ejemplo, **k-means** sobre las representaciones de los nodos) para agrupar nodos con alta interconexión dentro del mismo subgrafo, minimizando las interacciones entre subgrafos distintos.
+    \item \textbf{Descomposición basada en clusters}: Se aplica un algoritmo de clustering (por ejemplo, \(k-means\) sobre las representaciones de los nodos) para agrupar nodos con alta interconexión dentro del mismo subgrafo, minimizando las interacciones entre subgrafos distintos.
     \item \textbf{Descomposición mediante eliminación de aristas de baja prioridad}: Se eliminan aristas con pesos bajos o baja centralidad, dividiendo así el grafo en múltiples componentes separadas.
 \end{itemize}
 
@@ -385,13 +400,13 @@ No obstante, es importante destacar que esta cota teórica es muy conservadora. 
 \rule{\linewidth}{0.5pt}
 
 \section{Distribución de los Medicamentos a los Clientes}
-El problema consiste en un conjunto de lugares donde se desean entregar y recoger productos. En cada lugar se recoge y se entrega un único producto. Además, existe un punto de partida al que denominaremos origen, de donde sale el vehículo, en este caso un camión, encargado de hacer la recogidas y entregas. Al final del recorrido, este debe retornar al origen.  Dado que se conocen los costos de los viajes entre todo par de lugares, y de cada lugar al origen, se desea minimizar el costo de la entrega de los productos.
+El problema consiste en un conjunto de lugares donde se desean entregar y recoger productos, ya que en un posible intercambio ningún usuario se queda sin recibir o sin entregar su producto. En cada lugar se recoge y se entrega un único producto. El producto que se encuentra en un lugar es recogido siempre la primera vez que se visita ese lugar. Además, existe un punto de partida al que denominaremos origen, de donde sale el vehículo, en este caso un camión, encargado de hacer la recogidas y entregas. Al final del recorrido, este debe retornar al origen.  Dado que se conocen los costos de los viajes entre todo par de lugares, y de cada lugar al origen, se desea minimizar el costo de la entrega de los productos.
 
 \subsection{Modelación del problema}
 \begin{itemize}
     \item El origen es denominado como lugar \(0\). En este no se recoge ni se entrega ningún producto. Toda ruta válida comienza y termina en el origen.
-    \item Matriz de costos: Tiene el costo de viajar de un lugar a otro. Es simétrica \(cost[i][j] = cost[j][i]\). El costo de ir de un lugar a ese lugar es \(0\), \(cost[i][i]=0\).
-    \item Las relaciones de recogida y entrega entre los lugares pueden ser vistas como un ciclo \(c_1,c_2,...c_{n-1},c_n,c_1\), donde el producto que se entrega en \(c_{k+1}\) es recogido en \(c_k\), \(\forall k \geq 1\), ya que en cada \(c_k\) se recoge y se entrega un único producto. Para representar este ciclo utilizaremos un arreglo denominado \(pickup\_places\), donde \(pickup\_places[i]=j\) representa que el producto que se entrega en la ciudad \(i\) es recogido en la ciudad \(j\).
+    \item Matriz de costos: Tiene el costo de viajar de un lugar a otro. Es simétrica. El costo de ir de un lugar a él mismo es \(0\).
+    \item Las relaciones de recogida y entrega entre los lugares pueden ser vistas como un ciclo \(c_1,c_2,...c_{n-1},c_n,c_1\), donde el producto que se entrega en \(c_{k+1}\) es recogido en \(c_k\), \(\forall k: 1 \leq k \leq n\), ya que en cada \(c_k\) se recoge y se entrega un único producto. 
  
 \end{itemize}
 
@@ -399,8 +414,44 @@ El problema consiste en un conjunto de lugares donde se desean entregar y recoge
 Para proceder a la demostración, modificaremos el problema de recogida y entrega de productos, extendiéndolo a decidir si existe una ruta de costo \(k\) que satisfaga la entrega de productos en todos los lugares, dado el coste de viajar entre todo par de lugares y las relaciones de dependencia entre lugares, a cada lugar \(i\) se le asigna una máscara de bits que representa los lugares que tienen el producto necesario. A su vez, toda ruta debe cumplir que el producto recogido en un lugar se entregue en un único lugar diferente de él.
 
 Reducir \texttt{Ciclo hamiltoniano} a \texttt{Problema de Recogida y Entrega de Productos Extendido }:
+
+\begin{definition}[Ciclo Hamiltoniano]
+    Sea \( G = (V, E) \) un grafo no dirigido, donde \( V \) es el conjunto de vértices y \( E \) el conjunto de aristas.  
+
+    Un \textbf{ciclo hamiltoniano}  es un ciclo en \( G \) que visita cada vértice exactamente una vez, excepto el vértice inicial, que se repite al final para cerrar el ciclo. Es decir, es una secuencia de vértices \( v_1, v_2, \dots, v_n, v_1 \) tal que:  
+    \begin{itemize}
+        \item \( v_i \neq v_j \) para todo \( i \neq j \), excepto cuando \( v_1 = v_n \).
+        \item \( (v_i, v_{i+1}) \in E \) para \( i = 1, \dots, n-1 \).
+        \item \( (v_n, v_1) \in E \), cerrando el ciclo.
+    \end{itemize}
+\end{definition}
+
+El problema de determinar si un grafo tiene un Ciclo Hamiltoniano es NP-Completo, y por ende NP-Hard. \cite{GeeksforGeeksHamiltonian}
  
-La entrada del  \texttt{Ciclo Hamiltoniano} es un grafo dirigido $G=(V,E)$. Dado $G=(V,E)$, creamos una matriz de costes \(cost\), tal que \(cost[i][j]=1 \iff (i,j) \in E\), y \(cost[i][j]=\infty \iff (i,j) \notin E\) \(\forall i, j \in V\) y un arreglo \(pickup\_places\) tal que \(pickup\_places[j] = \sum_{\substack{(i,j) \in E}} 2^i\). Además, \(cost[0][i] =cost[i][0]=1 \text{ y } pickup\_places[0]=2^n-1 \text{, donde } n = |V| \) :
+La entrada al problema del \textbf{Ciclo Hamiltoniano}  es un grafo grafo dirigido \( G = (V, E) \), donde \( V \) es el conjunto de vértices y \( E \subseteq V \times V \) es el conjunto de aristas. A partir de ello, se define lo siguiente:
+
+\begin{enumerate}
+    \item \textbf{Matriz de adyacencia con costes}: 
+    Sea \(n=|V|\), se define una matriz \( C \) de tamaño \( n \times n \), donde cada entrada \( C_{i,j} \) representa la existencia o ausencia de una arista entre los vértices \( i \) y \( j \). Esta matriz se define como:
+    \[
+    C_{i,j} = 
+    \begin{cases} 
+    1 & \text{si } (i, j) \in E, \\
+    \infty & \text{si } (i, j) \notin E,
+    \end{cases}
+    \] \(\forall i, j \in V \).
+    Además, para el vértice que representa el origen \(0\), se cumple que:
+    \[C_{0,i} = C_{i,0} = 1 \quad \forall i \in V.\]
+
+    \item \textbf{Función de predecesores binarios}:  
+    Se define una función \( f: V \to \mathbb{N} \), donde para cada vértice \( j \in V \), el valor \( f(j) \) se calcula como:
+    \[
+    f(j) = \sum_{\substack{(i,j) \in E}} 2^i,
+    \]
+    es decir, la suma de \( 2^i \) para todos los vértices \( i \) que son predecesores de \( j \) en el grafo. 
+    Para el origen, se cumple que:\[f(0)=2^{n+1}-2\], ya que desde cualquier lugar se puede ir al origen.
+    
+\end{enumerate}
 
 Esta es la entrada al problema de Recogida y entrega de Productos. A continuación se muestra un ejemplo de ambas entradas.
 
@@ -433,8 +484,11 @@ Esta es la entrada al problema de Recogida y entrega de Productos. A continuaci�
 
 \end{tikzpicture}
 \end{center}
+
+\textbf{Matriz de Costes C}
+
 \[
-\text{cost} =
+\text{C} =
 \begin{bmatrix}
   \infty & 1 & 1 & 1 & 1 & 1 & 1 \\
   1 & \infty & 1 & 1 & 1 & \infty & \infty \\
@@ -444,10 +498,13 @@ Esta es la entrada al problema de Recogida y entrega de Productos. A continuaci�
   1 & \infty & \infty & \infty & \infty & \infty & 1 \\
   1 & 1 & \infty & \infty & \infty & \infty & \infty
 \end{bmatrix}
+\]
 
-\text{pickup\_places} =
-\begin{bmatrix}
-  -1 & 1 & 2 & 6 & 46 & 60 & 48
+Función f para cada uno de los vértices
+\[
+\text{f}=\begin{bmatrix}
+  0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+  62 & 1 & 2 & 6 & 46 & 60 & 48
 \end{bmatrix}
 \]
 
@@ -460,14 +517,16 @@ Esta es la entrada al problema de Recogida y entrega de Productos. A continuaci�
 
 \textbf{Correctitud}
 
-Existe un ciclo Hamiltoniano en \( G \) de tamaño \(\iff\) existe una ruta de costo \(n+2\) con las entradas \(cost\) y \(pickup\_places\).
+Existe un ciclo Hamiltoniano en \( G \)  \(\iff\) existe una ruta de costo \(n+2\) con las entradas \(C\) y \(f\).
 
 \begin{itemize}
     \item \(\Leftarrow\) 
-    Sea r una posible ruta de recogida y entrega de productos de costo \(n+2\), entonces \(r = [x_1,x_2,...,x_n,x_{n+1},x_{n+2},x_{n+3}]\), ya que para que el costo de una ruta sea \(m\) esta debe tener \(m+1\) lugares, pues los únicos posibles costos de viajar entre dos lugares son \(1\) y \(\infty\), y de existir \(cost[x_i][x_j]= \infty\), con \(i<j\) el costo de la ruta sería \(\infty\). Además, se cumple que \(x_1=x_{n+3}=0\), ya que la ruta debe iniciar en el almacén y terminar en este. Todos los lugares deben ser visitados al menos una vez para que se les pueda entregar los productos, y existen \(n\) lugares diferentes sin contar el origen.Como en \([x_2,...,x_{n+1},x_{n+2}]\) hay \(n+1\) lugares, entonces hay un lugar que es visitado dos veces, este lugar es \(x_2\), ya que al visitar \(x_2\) no se le puede entregar su producto, ya que este no ha sido recogido, pues el único lugar que se visitó antes fue el origen, que no contiene ningún producto. Si \(x_2 = x_i\), con \(i<n+2\), entonces \(x_{n+2} \neq x_2\), por lo que \(x_{n+2}\) solo aparece una vez, entonces el producto recogido en \(x_{n+2}\) no puede ser entregado en ningún lugar, ya que el único lugar que es visitado después, es el origen. Por tanto, se cumple que \(x_2 = x_{n+2}\). Dado \(r\), es posible obtener un ciclo \(c\) en \(G\) que contenga todos los vértices una sola vez, \(c = [x_2,...,x_n,x_{n+1},x_2]\), pues a cada par \(x_k,x_{k+1} \in r\), le corresponde un arco \((x_k,x_{k+1}) \in E\), pues en caso contrario \(cost[x_k][x_{k+1}] \neq 1\). Por tanto, por cada ruta válida con costo \(n+2\), existe un ciclo hamiltoniano en \(G\).
+    Sea r una posible ruta de recogida y entrega de productos de costo \(n+2\), entonces \(r = [x_0,x_1,...,x_n,x_{n+1},x_{n+2}]\), ya que para que el costo de una ruta sea \(m\) esta debe tener \(m+1\) lugares, pues los únicos posibles costos de viajar entre dos lugares son \(1\) y \(\infty\), y de existir \(x_k\), con \(0 \leq k \leq n+1\) tal que \(C{x_k,x_{k+1}} = \infty\)  el costo de la ruta sería \(\infty\). Además, se cumple que \(x_0=x_{n+2}=0\), ya que la ruta debe iniciar en el origen y terminar en este. Todos los lugares deben ser visitados al menos una vez para que se les pueda entregar los productos, y existen \(n\) lugares diferentes sin contar el origen.Como en \([x_1,...,x_{n+1},x_{n+1}]\) hay \(n+1\) lugares, entonces hay exactamente un lugar que es visitado dos veces, por \textit{Principio del Palomar} \cite{palomar}.     
+    \). Si existiera más de un lugar que fue vistado más de una vez, entonces 
+    \(\sum_{k=0}^{N+1} \sum_{} C_{x_k, x_{k+1} > n+2}\). El lugar que es visitado dos veces es \(x_1\), ya que al visitar \(x_1\) no se le puede entregar su producto, ya que este no ha sido recogido, pues el único lugar que se visitó antes fue el origen, que no contiene ningún producto. Si \(x_1 = x_i\), con \(i<n+1\), entonces \(x_{n+1} \neq x_2\), por lo que \(x_{n+1}\) solo aparece una vez, entonces el producto recogido en \(x_{n+1}\) no puede ser entregado en ningún lugar, ya que el único lugar que es visitado después, es el origen. Por tanto, se cumple que \(x_2 = x_{n+1}\). Dado \(r\), es posible obtener un ciclo \(c\) en \(G\) que contenga todos los vértices una sola vez, \(c = [x_1,...,x_n,x_1]\), pues a cada par \(x_k,x_{k+1} \in r\), le corresponde un arco \((x_k,x_{k+1}) \in E\), pues en caso contrario \(C_{k,k+1} \neq 1\). Por tanto, por cada ruta válida con costo \(n+2\), existe un ciclo hamiltoniano en \(G\).
 
     \item \(\Rightarrow\) 
-    Dado un ciclo hamiltoniano \(h\) en \(G\), con \(h=[x_2,x_3,...,x_n,x_{n+1},x_2]\), es posible construir una ruta válida de costo \(n+2\) para el problema de recogida y entrega de productos. Sea \(r=[0,x_2,x_3,...x_n,x_{n+1},x_2,0]\), esta ruta satisface las dependencias expresadas en \(pickup\_places\), pues  \(pickup\_places[x_{k+1}] \& 2^{x_k} \neq 0\), ya que \((x_k,x_{k+1})\in E\). Además, el costo de \(r\) es \(n+2\), pues \(cost[x_k][x_{k+1}]=1 \forall x_k \in r \) y \(cost[0][x_2]=cost[x_2][0]=1\) y contiene todos los lugares porque \(h\) es un ciclo hamiltoniano. Por tanto, se cumple que por cada ciclo hamiltoniano en \(G\), existe una ruta válida de recogida y entrega de productos con entradas \(cost\) y \(pickup\_places\).
+    Dado un ciclo hamiltoniano \(h\) en \(G\), con \(h=[x_1,x_2,...,x_n,x_1]\), es posible construir una ruta válida de costo \(n+2\) para el problema de recogida y entrega de productos. Sea \(r=[0,x_1,x_2,...x_n,x_1,0]\), esta ruta satisface las dependencias expresadas por la función \(f\), pues  \(f(x_{k+1}) \& 2^{x_k} \neq 0\), ya que \((x_k,x_{k+1})\in E\). Además, el costo de \(r\) es \(n+2\), pues \(\sum_{k=0}^{N+1} \sum_{} C_{x_k, x_{k+1}}\) y contiene todos los lugares porque \(h\) es un ciclo hamiltoniano. Por tanto, se cumple que por cada ciclo hamiltoniano en \(G\), existe una ruta válida de recogida y entrega de productos con entradas \(C\) y \(f\).
  
     
 
@@ -475,32 +534,62 @@ Existe un ciclo Hamiltoniano en \( G \) de tamaño \(\iff\) existe una ruta de c
 
 \textbf{Extensión al problema de Optimización}
 
-Existe conjunto de retroalimentación de arcos de tamaño mínimo en \(G\) \(\iff\) existe un conjunto de retroalimentación de arcos en \(G\) de tamaño \(k\), con \(k \geq 0\).
+Sea \(OPT\)  el problema de hallar la ruta de menor costo que satisface el \textbf{Problema de Recogida y Entrega Extendido}.
+Sea \(DEC\) el problema de decisión: decidir si existe una ruta con costo  \( \leq n+2\).
+
+Supongamos que existe un algoritmo \(A\) que resuelve \(OPT\) en tiempo polinomial. 
+Sea \(c*\) el menor costo que se obtiene al ejecutar \(A\).
 \begin{itemize}
-    \item \(\Leftarrow\) 
-    Se cumple por Principio del Buen Orden.
-    \item \(\Rightarrow\) 
-    Si existe un conjunto de retroalimentación de arcos de tamaño mínimo \(l\), al agregar \(k-l\) vértices al conjunto, este va a seguir cumpliendo que es un conjunto de retroalimentación de arcos.
+    \item Si \(c* \leq n+2\), entonces existe una ruta con costo \(\leq n+2\).
+    \item Si \(c* > n+2\), como \(c*\) es la ruta de menor costo, entonces no existe una ruta con costo \(\leq n+2\)
 \end{itemize}
 
-El \textbf{Problema de Recogida y Entrega de Productos}  es una especialización del \textbf{Problema de Recogida y Entrega de Productos Extendido}, donde la matriz de costes es simétrica y el coste de viajar de un lugar a él mismo es \(0\). Además, la máscara de bits solo tiene un bit activo, por lo que \(pickup_places\) solo tiene el número del bit activo por cada lugar, en el caso del origen, \(pickup_places[0]=-1\). Por tanto, el \textbf{Problema de Recogida y Entrega de Productos} también es NP-Hard.
+Dado que \(DEC\) es NP-Hard, esto implicaría que  \(P = NP\). Por tanto, queda demostrado que \(DEC\) pertenece al conjunto de problemas NP-Duros.
+
+El \textbf{Problema de Recogida y Entrega de Productos}  es una especialización del \textbf{Problema de Recogida y Entrega de Productos Extendido}, donde la matriz de costes es simétrica y el coste de viajar de un lugar a él mismo es \(0\). Además, la máscara de bits solo tiene un bit activo, por lo que es posible simplificar la función \(f\) como una función que devuelva el número del vértice que precede a cada vértice en el ciclo de recogidas y entregas. O sea, dado el ciclo de relaciones de recogidas y entregas \(c_1,c_2,...c_{n-1},c_n,c_{n+1}\), donde \(c_{n+1}=c_1\), se cumple que:
+\[
+    f(c_{k+1})=c_k \forall k : 1 \leq k \leq n
+\]
+Por tanto, el \textbf{Problema de Recogida y Entrega de Productos} también es NP-Hard.
 
 \subsection{Soluciones}
 Dado que el \textbf{Problema de Recogida y Entrega de Productos} pertenece a la clase de problemas NP-difíciles, es decir, para los cuales no se conoce un algoritmo que los resuelva en tiempo polinomial en el peor caso, en esta sección se presenta una solución exacta para el problema formulado, así como algoritmos metaheurísticos que permiten obtener soluciones aproximadas cercanas al óptimo.
 \subsubsection{Solución exacta}
-El problema plateado es muy similar al \textbf{Problema del Viajante}(TSP)\cite{Applegate2006}, pues consiste en hallar la ruta de menor costo. A diferencia de TSP, el problema de Recogidas y entregas presenta restricciones que limitan el orden en que son visitados los lugares. 
-Un lugar puede ser visitado con dos propósitos: recoger el producto que se encuentra en este lugar o entregar el producto solicitado. Si un lugar \(x\) es visitado para recoger su producto lo denominaremos \(x'\) y si es visitado para entregar un producto lo denominaremos \(x''\). Por tanto, la ruta que optimiza el proceso visita como máximo cada lugar dos veces, ya que en cada lugar se recoge y se entrega un único producto. El origen, a su vez, es visitado solo al principio y al final de la ruta. Por ende, la entrada de este problema puede ser modificada para ser resuelto con un algoritmo que resuelva TSP, donde no se tengan en cuenta las permutaciones inválidas . Dado que se tienen \(x_1,x_2,...,x_{n-1},x_n\) lugares. Un permutación \(p\) que representa una posible ruta de vistas a lugares para recoger y entregar productos, está formada por \(x_i'\) y \(x_i''\) \(\forall i |  1 \leq i \leq n\), ya que los productos deben ser recogidos y entregados por cada uno de los lugares. Una permutación \(p\) es inválida  si y solo si:
+El problema plateado es muy similar al \textbf{Problema del Viajante}(TSP)\cite{Applegate2006}, pues consiste en hallar la ruta de menor costo.
+\begin{definition}[Problema del Viajante]
+    Sea un conjunto de \( n \) ciudades \( C = \{c_1, c_2, \dots, c_n\} \) y una función de costo \( d: C \times C \to \mathbb{R}^+ \) que asigna un costo \( d(c_i, c_j) \) a viajar entre cada par de ciudades \( c_i \) y \( c_j \).  
+
+    El \textbf{Problema del Viajante} consiste en encontrar un ciclo hamiltoniano de costo mínimo, es decir, un recorrido cerrado que visite exactamente una vez cada ciudad y minimice la suma total de los costos de viaje. Matemáticamente, buscamos un ordenamiento \( \pi \) de las ciudades que minimice la siguiente expresión:  
+
+    \[
+    \sum_{i=1}^{n-1} d(c_{\pi(i)}, c_{\pi(i+1)}) + d(c_{\pi(n)}, c_{\pi(1)})
+    \]
+
+    donde \( \pi(i) \) representa la \( i \)-ésima ciudad visitada en la ruta.
+\end{definition}
+A diferencia de TSP, el problema de Recogida y Entrega presenta restricciones que limitan el orden en que son visitados los lugares. 
+Por ende, la entrada de este problema puede ser modificada para ser resuelto con un algoritmo que resuelva TSP, donde no se tengan en cuenta las permutaciones inválidas. Dado que se tienen \(1,2,...,n-1,n\) lugares,
+en una ruta óptima, se cumple que cada lugar \(l \in {1,...,n}\) es visitado como máximo dos veces, pues solo existen dos propósitos para visitar un lugar: recoger el producto que se encuentra ahí o entregar el producto correspondiente, cualquier otra visita aumentaría el costo total sin necesidad.  El origen, a su vez, es visitado solo al principio y al final de la ruta. Si un lugar \(l\) es visitado para recoger un producto lo denominaremos \(l'\) y si  es visitado para entregar un producto lo denominaremos \(l''\).
+Sea \(p\) una permutación que representa una posible ruta de vistas a lugares para recoger y entregar productos:
+\[p = [0,p_1,p_2,...,p_{2n-1}},p_{2n},0] \], donde \(p\) está formado por todos los \(l', l''\), ya que por cada lugar cada producto debe ser recogido y entregado.
+
+ Una permutación \(p\) es inválida  si y solo si:
 \begin{itemize}
-    \item \(x_i''\) aparece antes que \(x_i'\).
-    \item \(x_i''\) aparece antes que \(x_j'\), donde \(x_j\) es el lugar donde se recoge el producto que debe entregarse en \(x_i\), o sea, \(pickup\_places[x_i]=x_j\).
+    \item \(l''\) aparece antes que \(l'\).
+    
+    Un producto no es entregado en un lugar si antes no se ha sido recogido el producto del lugar de entrega.
+    \item \(l_i''\) aparece antes que \(l_j'\), donde \(l_j\) es el lugar donde se recoge el producto que debe entregarse en \(l_i\), o sea, \(f(l_i)=l_j\).
+    
+    Un producto no puede ser entregado si no se ha recogido con anterioridad.
 \end{itemize}
 
 Por tanto, una ciudad solo debe visitarse si no invalida la ruta que se tiene hasta el momento.
 
-Es creada una nueva matriz de costos \(new\_cost\), de forma tal que \(new\_cost[x_i'][x_i'']=0\), ya que visitar un lugar para entregar un producto después de que fue visitado para recoger su producto, es quivalente a visitar ese lugar una única vez. Además \(new\_cost[x_i'][x_j']=new\_cost[x_i''][x_j'']=new\_cost[x_i'][x_j'']=new\_cost[x_i''][x_j']=cost[x_i][x_j]\). Esta es la entrada al algoritmo que resuelve TSP, junto con el ciclo de deependencias, donde se añaden verificaciones para no formar permutaciones inválidas. 
+Es creada una nueva matriz de costos \(C'\), de forma tal que \(C'_{l_i',l_i''}=C'_{l_i'',l_i'}==0\), ya que visitar un lugar para entregar un producto después de que fue visitado para recoger su producto, es quivalente a visitar ese lugar una única vez. Además \(C'_{l_i',l_j'}=C'_{l_i'',l_j''}=C'_{l_i',l_j''}=C'_{l_i'',l_j'}=C'_{l_i,l_j}\). Esta es la entrada al algoritmo que resuelve TSP, junto con el ciclo de dependencias, donde se añaden verificaciones para no formar permutaciones inválidas. 
 
 \textbf{Complejidad}
-La solución propuesta es una modificación de la implementación del algoritmo que resuelve el Problema del Viajante con un enfoque de programación dinámica, cuya complejidad temporal es \(\mathcal{O}(n^2*2^n)\). Las verificaciones añadidas funcionan en tiempo constante, por tanto, la complejidad temporal del algoritmo propuesto no varía, y es \(\mathcal{O}(n^2*2^n)\). 
+La solución propuesta es una modificación de la implementación del algoritmo que resuelve el Problema del Viajante con un enfoque de programación dinámica \cite{geeksforgeeks_tsp_using_dp}, cuya complejidad temporal es \(\mathcal{O}(n^2*2^n)\). Las verificaciones añadidas funcionan en tiempo constante, por tanto, la complejidad temporal del algoritmo propuesto no varía, y es \(\mathcal{O}(n^2*2^n)\). 
+ 
 
 \subsubsection{Algoritmo de Optimización por Colonias de Hormigas}
 
@@ -513,7 +602,7 @@ En la naturaleza, las hormigas encuentran caminos óptimos entre su nido y las f
     \label{fig:gadget}
 \end{figure}
 
- En esta solución, las hormigas van construyendo recorridos (posibles soluciones al problema) moviéndose por el grafo de un punto a otro hasta que completan un ciclo. Para ello, primeramente se inicializa una matriz de feronmonas con un valor pequeño y constante, como el total de  clientes. Luego en cada iteración del algoritmo, cada hormiga construye su recorrido ejecutando una regla de transición probabilista que indica qué nodo debe añadir al ciclo que está construyendo. El número de iteraciones máximo que se deja correr al algoritmo depende de la decisión del usuario, ya que no hay un mecanismo a priori que diga si alguna hormiga ya ha encontrado la solución óptima. \cite{ant}
+ En esta solución, las hormigas van construyendo recorridos (posibles soluciones al problema) moviéndose por el grafo de un punto a otro hasta que completan un ciclo. Para ello, primeramente se inicializa una matriz de feromonas con un valor pequeño y constante, como el total de  clientes. Luego, en cada iteración del algoritmo, cada hormiga construye su recorrido ejecutando una regla de transición probabilista que indica qué nodo debe añadir al ciclo que está construyendo. El número de iteraciones máximo que se deja correr al algoritmo depende de la decisión del usuario, ya que no hay un mecanismo a priori que diga si alguna hormiga ya ha encontrado la solución óptima. \cite{ant}
 
 Para cada hormiga, la transición de la ciudad \textit{i} a la ciudad \textit{j} en una iteración del algoritmo depende de:
 \begin{itemize}
@@ -557,17 +646,17 @@ y se supone que, inicialmente, en todas las aristas hay una cantidad pequeña de
 
 El número total de hormigas que intervienen, que hemos denotado por {M} en la ecuación anterior, es otro parámetro importante a tener en cuenta:
 \begin{itemize}
-    \item Demasiadas hormigas tenderán rápidamente a reforzar recorridos que no son óptimos, por lo que puede ser difícil que el grupo los olvide y encontrar mejores opciones,
+    \item demasiadas hormigas tenderán rápidamente a reforzar recorridos que no son óptimos, por lo que puede ser difícil que el grupo los olvide y encontrar mejores opciones,
     \item muy pocas hormigas no provocarán el proceso de sinergia esperado, ya que no pueden contrarrestar el efecto de la evaporación de feromona, por lo que, finalmente, la solución que proporcionen sería equivalente al del algoritmo voraz estocástico \cite{ant}
 \end{itemize}
 
-La complejidad de esta solución es \(O(I·A·n^2)\) siendo \(I\) la cantidad de iteraciones, \(A\) la cantidad de hormigas y \(n\) el número de clientes (si se escoge \(A=n\) entonces la complejidad quedaría \(O(I·n^3)\)). Esta complejidad es debido a que por cada iteración del algoritmo, cada hormiga construye una ruta posible y calcula su distancia total. Realizar estas acciones serían en total \(O(n^2)\). Por tanto, la complejidad es la dicha anteriormente.
+La complejidad de esta solución es \(O(I \cdot A \cdot n^2)\) siendo \(I\) la cantidad de iteraciones, \(A\) la cantidad de hormigas y \(n\) el número de clientes (si se escoge \(A=n\) entonces la complejidad quedaría \(O(I \cdot n^3)\)). Esta complejidad es debido a que por cada iteración del algoritmo, cada hormiga construye una ruta posible y calcula su distancia total. Realizar estas acciones serían en total \(O(n^2)\). Por tanto, la complejidad es la dicha anteriormente.
 
 \subsubsection{Algoritmo Genético}
 
 El Algoritmo Genético (AG) es una técnica de resolución de problemas que se inspira en la evolución biológica como estrategia para la resolución, englobándose en técnicas basadas en poblaciones. Dado un problema específico a resolver, la entrada del AG es un conjunto de soluciones potenciales a ese problema, codificadas de alguna manera, y una métrica llamada función de aptitud, o \textit{fitness}, que permite evaluar cuantitativamente la bondad de cada solución candidata. En el problema de la distribución de los medicamentos, la entrada de AG es un conjunto de rutas posibles y la función de aptitud es la longitud de cada ruta, de manera que la mejor ruta es la que minimiza la distancia total.  
 
-A partir de ahí, AG evalúa cada candidata de acuerdo con la función de aptitud. Por supuesto, se debe tener en cuenta que estas primeras candidatas mostrarán baja eficiencia con respecto a la resolución del problema, y la mayoría no funcionarán en absoluto. Sin embargo, por puro azar, unas pocas pueden ser prometedoras, pudiendo mostrar algunas características que muestren, aunque solo sea de una forma débil e imperfecta, cierta capacidad de solución del problema. Estas candidatas prometedoras son escogidas por un proceso de selección. Entre las técnicas de selección se encuentran los torneos, que eligen subgrupos de individuos de la población, y los miembros de cada subgrupo compiten entre ellos. Sólo se elige a un individuo de cada subgrupo para la reproducción.  
+A partir de ahí, AG evalúa cada candidata de acuerdo con la función de aptitud. Por supuesto, se debe tener en cuenta que estas primeras candidatas mostrarán baja precisión con respecto a la resolución del problema, y la mayoría no funcionarán en absoluto. Sin embargo, por puro azar, unas pocas pueden ser prometedoras, pudiendo mostrar algunas características que muestren, aunque solo sea de una forma débil e imperfecta, cierta capacidad de solución del problema. Estas candidatas prometedoras son escogidas por un proceso de selección. Entre las técnicas de selección se encuentran los torneos, que eligen subgrupos de individuos de la población, y los miembros de cada subgrupo compiten entre ellos. Sólo se elige a un individuo de cada subgrupo para la reproducción.  
 
 Estas candidatas prometedoras se conservan y se les permite reproducirse. Las características individuales de las candidatas se combinan por medio de operaciones de cruzamiento para generar nuevos descendientes (simulando lo que sería la reproducción sexual). En el problema en cuestión se utiliza el \textit{Order Crossover - OX}, que a diferencia del cruzamiento de un punto, dos puntos y el uniforme, en este cruzamiento se respeta el principio de permutación y cada elemento aparece en un individuo una sola vez.
 
@@ -590,12 +679,20 @@ Podemos dar una primera formalización del proceso anterior por medio del siguie
 
 Aunque pueda parecer asombroso, anti-intuitivo, y quizás como algo de suerte y magia, los AG han demostrado ser una estrategia enormemente poderosa y exitosa para resolver problemas, mostrando de manera espectacular el poder de los principios evolutivos. Además, las soluciones que consiguen son a menudo más eficientes, más elegantes o más complejas que las que un humano produciría. 
 
-Este algoritmo de aproximación posee una complejidad \(O(G \cdot P \cdot n²)\), siendo \(G\) la cantidad de generaciones o iteraciones del algoritmo, \(P\) el tamaño de la población y \(n\) la cantidad de clientes. Se puede comprobar, pues:
-\begin{itemize}
-    \item Crear la población: Se generan P rutas, cada una con complejidad O(n) $\rightarrow$ \(O(P \cdot n)\)
-    \item Por cada generación se escoge la mitad de la población y por cada individuo se realizan dos veces la selección, cruzamiento y mutación. La selección se realiza en \(O(n)\), el cruzamiento en \(O(n^2)\) y la mutación en \(O(1)\). Antes de terminar la iteración, se calculan las distancias de cada uno de los individuos de la población y se ordenan, en \(O(n\cdot P \cdot \log P )\). 
-    \item Por tanto, la complejidad total, sería \(O(P \cdot n + G \cdot n\cdot P \cdot \log P + G \cdot P \cdot n^2) = O(G \cdot P \cdot n^2)\). 
-\end{itemize}
+Este algoritmo de aproximación posee una complejidad \(O(G \cdot P \cdot n²)\), siendo \(G\) la cantidad de generaciones o iteraciones del algoritmo, \(P\) el tamaño de la población y \(n\) la cantidad de clientes.
+
+\subsection{Resultados experimentales}
+
+Para realizar un análisis sobre la precisión de las respuestas de los algoritmos implementados se realizaron 10 iteraciones a los algoritmos, es decir, con 10 valores de \(n\) distintos. Se comenzó con \(n=2\) hasta \(n=12\); en la práctica debido a la resolución del problema se calculan los algoritmos con las cantidades de clientes duplicadas, entonces sería desde \(n=4\) hasta \(n=24\), moviéndose de dos en dos. El análisis del algoritmo exacto para el problema de Recogida y Entrega, el cual es una especialización del \(TSP\), en relación a los algoritmos aproximados \textit{Algoritmo de Optimización de Colonia de Hormigas} y \textit{Algoritmo Genético}, se visualiza a continuación:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{grafico2.png}
+    \caption{Comparación de los algoritmos para el problema de Recogida y Entrega.}
+    \label{fig:gadget}
+\end{figure}
+
+Se puede apreciar que los algoritmos aproximados distan en una medida del algoritmo exacto. El \textit{Algoritmo de Optimización de Colonia de Hormigas} en relación con el \textit{Algoritmo Genético} presenta una mejor precisión del resultado, incluso a medida que aumenta el número de clientes. Sin embargo, en dependencia de los parámetros que se utilizan en ambos algoritmos de aproximación, el \textit{Algoritmo Genético} suele ser más eficiente que el \textit{Algoritmo de Optimización de Colonia de Hormigas} para valores grandes de \(n\). 
 
 \rule{\linewidth}{0.5pt}
 
@@ -610,6 +707,18 @@ El estudio realizado demuestra que el problema del intercambio de medicamentos e
   \sloppypar
   \bibitem{ant} Sancho Caparrini, Fernando (2018). Hormigas y el Problema del Viajante. Noviembre, 2018.  
   \bibitem{Applegate2006} Applegate, D. L., Bixby, R. E., Chvátal, V.,  Cook, W. J. (2006). The Traveling Salesman Problem: A Computational Study. Princeton University Press.  
+  \bibitem{palomar} Graham, R. L., Knuth, D. E., Patashnik, O. (1994). Concrete Mathematics: A Foundation for Computer Science. Addison-Wesley, pp. 15--16.
+
+  \bibitem{GeeksforGeeksHamiltonian}
+GeeksforGeeks contributors, ``Proof that Hamiltonian cycle is NP-complete,''  
+Disponible en: \url{https://www.geeksforgeeks.org/proof-that-hamiltonian-cycle-is-np-complete/}.  
+Consultado el 13 de febrero de 2025.
+\bibitem{geeksforgeeks_tsp_using_dp} GeeksforGeeks. (n.d.). \textit{Travelling Salesman Problem using Dynamic Programming}. Recuperado el 6 de febrero de 2025 de \url{https://www.geeksforgeeks.org/travelling-salesman-problem-using-dynamic-programming/}.
+
+\bibitem{Wikipedia3DMatching}
+Wikipedia contributors, ``3-dimensional matching,'' \textit{Wikipedia, The Free Encyclopedia}, 
+Disponible en: \url{https://en.wikipedia.org/wiki/3-dimensional_matching#CITEREFKarp1972}.  Consultado el 13 de febrero de 2025.
+
 \end{thebibliography}
 
 \end{document}
